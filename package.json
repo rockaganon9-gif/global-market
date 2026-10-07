@@ -1,0 +1,17 @@
+{
+  "name": "global-market",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Marketplace e-commerce multi-vendeurs pour l'Afrique (web + mobile)",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev --workspace=apps/web",
+    "dev:api": "npm run dev --workspace=apps/api",
+    "dev:mobile": "npm run start --workspace=apps/mobile",
+    "build:web": "npm run build --workspace=apps/web",
+    "build:api": "npm run build --workspace=apps/api"
+  }
+}

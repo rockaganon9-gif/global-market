@@ -1,0 +1,13 @@
+node_modules/
+dist/
+build/
+.next/
+.expo/
+.expo-shared/
+*.log
+.env
+.env.local
+.env.*.local
+.DS_Store
+Thumbs.db
+apps/api/prisma/dev.db

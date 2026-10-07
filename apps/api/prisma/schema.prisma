@@ -1,0 +1,235 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  VENDOR
+  ADMIN
+}
+
+enum VendorStatus {
+  PENDING
+  APPROVED
+  SUSPENDED
+}
+
+enum PaymentMethod {
+  MOBILE_MONEY
+  CARD
+  CASH_ON_DELIVERY
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum ProductType {
+  PHYSICAL
+  DIGITAL
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  phone        String   @unique
+  passwordHash String
+  fullName     String
+  role         Role     @default(CUSTOMER)
+  country      String
+  createdAt    DateTime @default(now())
+
+  vendor Vendor?
+  cart   Cart?
+  orders Order[]
+}
+
+model Vendor {
+  id          String       @id @default(cuid())
+  userId      String       @unique
+  user        User         @relation(fields: [userId], references: [id])
+  shopName    String
+  shopSlug    String       @unique
+  description String?
+  logoUrl     String?
+  country     String
+  city        String?
+  status      VendorStatus @default(PENDING)
+  createdAt   DateTime     @default(now())
+
+  themeId String?
+  theme   Theme?  @relation(fields: [themeId], references: [id])
+
+  products       Product[]
+  payouts        Payout[]
+  themePurchases ThemePurchase[]
+}
+
+/// Thème visuel appliqué à la page publique d'une boutique.
+model Theme {
+  id              String   @id @default(cuid())
+  name            String
+  slug            String   @unique
+  description     String
+  isPremium       Boolean  @default(false)
+  priceCents      Int      @default(0)
+  previewImageUrl String?
+  createdAt       DateTime @default(now())
+
+  vendors   Vendor[]
+  purchases ThemePurchase[]
+}
+
+/// Achat d'un thème premium par un vendeur (accès permanent une fois payé).
+model ThemePurchase {
+  id            String        @id @default(cuid())
+  vendorId      String
+  vendor        Vendor        @relation(fields: [vendorId], references: [id])
+  themeId       String
+  theme         Theme         @relation(fields: [themeId], references: [id])
+  amountCents   Int
+  currency      String        @default("XOF")
+  paymentStatus PaymentStatus @default(PENDING)
+  paymentRef    String?
+  createdAt     DateTime      @default(now())
+
+  @@unique([vendorId, themeId])
+  @@index([vendorId])
+}
+
+model Category {
+  id       String     @id @default(cuid())
+  name     String
+  slug     String     @unique
+  parentId String?
+  parent   Category?  @relation("CategoryToCategory", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryToCategory")
+
+  products Product[]
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  vendorId    String
+  vendor      Vendor      @relation(fields: [vendorId], references: [id])
+  categoryId  String
+  category    Category    @relation(fields: [categoryId], references: [id])
+  title       String
+  slug        String      @unique
+  description String
+  priceCents  Int
+  currency    String      @default("XOF")
+  type        ProductType @default(PHYSICAL)
+  /// Stock pour un produit physique ; ignoré pour un produit digital (livraison illimitée).
+  stock       Int         @default(0)
+  /// Lien de téléchargement, uniquement pour un produit digital. Jamais exposé publiquement, seulement à l'acheteur après paiement.
+  digitalFileUrl String?
+  images      String[]
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+
+  orderItems OrderItem[]
+  cartItems  CartItem[]
+
+  @@index([vendorId])
+  @@index([categoryId])
+}
+
+model Cart {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  items CartItem[]
+}
+
+model CartItem {
+  id        String  @id @default(cuid())
+  cartId    String
+  cart      Cart    @relation(fields: [cartId], references: [id])
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+
+  @@unique([cartId, productId])
+}
+
+model Order {
+  id     String @id @default(cuid())
+  buyerId String
+  buyer   User   @relation(fields: [buyerId], references: [id])
+
+  totalCents    Int
+  currency      String        @default("XOF")
+  paymentMethod PaymentMethod
+  paymentStatus PaymentStatus @default(PENDING)
+  paymentRef    String?
+  status        OrderStatus   @default(PENDING)
+
+  /// Absents pour une commande 100% digitale (pas de livraison physique).
+  shippingFullName String?
+  shippingPhone     String?
+  shippingCountry   String?
+  shippingCity      String?
+  shippingAddress   String?
+
+  createdAt DateTime @default(now())
+
+  items OrderItem[]
+
+  @@index([buyerId])
+}
+
+model OrderItem {
+  id              String      @id @default(cuid())
+  orderId         String
+  order           Order       @relation(fields: [orderId], references: [id])
+  productId       String
+  product         Product     @relation(fields: [productId], references: [id])
+  vendorId        String
+  title           String
+  priceCents      Int
+  quantity        Int
+  /// Commission plateforme figée au moment de la commande (le taux peut changer ensuite sans affecter l'historique).
+  commissionCents Int         @default(0)
+  /// Type figé au moment de la commande (même si le produit change de type ensuite).
+  productType     ProductType @default(PHYSICAL)
+
+  @@index([orderId])
+  @@index([vendorId])
+}
+
+/// Un reversement effectué par la plateforme à un vendeur (virement, Mobile Money...).
+model Payout {
+  id         String   @id @default(cuid())
+  vendorId   String
+  vendor     Vendor   @relation(fields: [vendorId], references: [id])
+  amountCents Int
+  currency   String   @default("XOF")
+  note       String?
+  createdAt  DateTime @default(now())
+
+  @@index([vendorId])
+}
+
+/// Ligne unique contenant les réglages globaux de la plateforme (id fixe "global").
+model PlatformSettings {
+  id             String @id @default("global")
+  commissionRate Float  @default(10)
+}

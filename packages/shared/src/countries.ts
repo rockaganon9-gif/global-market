@@ -1,0 +1,58 @@
+export interface Country {
+  name: string;
+  code: string;
+  dial: string;
+  flag: string;
+}
+
+// Pays africains en priorité (marché principal), puis quelques pays additionnels.
+export const COUNTRIES: Country[] = [
+  { name: "Côte d'Ivoire", code: "CI", dial: "+225", flag: "🇨🇮" },
+  { name: "Sénégal", code: "SN", dial: "+221", flag: "🇸🇳" },
+  { name: "Mali", code: "ML", dial: "+223", flag: "🇲🇱" },
+  { name: "Burkina Faso", code: "BF", dial: "+226", flag: "🇧🇫" },
+  { name: "Niger", code: "NE", dial: "+227", flag: "🇳🇪" },
+  { name: "Togo", code: "TG", dial: "+228", flag: "🇹🇬" },
+  { name: "Bénin", code: "BJ", dial: "+229", flag: "🇧🇯" },
+  { name: "Guinée", code: "GN", dial: "+224", flag: "🇬🇳" },
+  { name: "Guinée-Bissau", code: "GW", dial: "+245", flag: "🇬🇼" },
+  { name: "Sierra Leone", code: "SL", dial: "+232", flag: "🇸🇱" },
+  { name: "Liberia", code: "LR", dial: "+231", flag: "🇱🇷" },
+  { name: "Gambie", code: "GM", dial: "+220", flag: "🇬🇲" },
+  { name: "Cap-Vert", code: "CV", dial: "+238", flag: "🇨🇻" },
+  { name: "Mauritanie", code: "MR", dial: "+222", flag: "🇲🇷" },
+  { name: "Ghana", code: "GH", dial: "+233", flag: "🇬🇭" },
+  { name: "Nigeria", code: "NG", dial: "+234", flag: "🇳🇬" },
+  { name: "Cameroun", code: "CM", dial: "+237", flag: "🇨🇲" },
+  { name: "Tchad", code: "TD", dial: "+235", flag: "🇹🇩" },
+  { name: "Gabon", code: "GA", dial: "+241", flag: "🇬🇦" },
+  { name: "Congo-Brazzaville", code: "CG", dial: "+242", flag: "🇨🇬" },
+  { name: "RD Congo", code: "CD", dial: "+243", flag: "🇨🇩" },
+  { name: "Guinée équatoriale", code: "GQ", dial: "+240", flag: "🇬🇶" },
+  { name: "République centrafricaine", code: "CF", dial: "+236", flag: "🇨🇫" },
+  { name: "Angola", code: "AO", dial: "+244", flag: "🇦🇴" },
+  { name: "Maroc", code: "MA", dial: "+212", flag: "🇲🇦" },
+  { name: "Algérie", code: "DZ", dial: "+213", flag: "🇩🇿" },
+  { name: "Tunisie", code: "TN", dial: "+216", flag: "🇹🇳" },
+  { name: "Égypte", code: "EG", dial: "+20", flag: "🇪🇬" },
+  { name: "Libye", code: "LY", dial: "+218", flag: "🇱🇾" },
+  { name: "Kenya", code: "KE", dial: "+254", flag: "🇰🇪" },
+  { name: "Tanzanie", code: "TZ", dial: "+255", flag: "🇹🇿" },
+  { name: "Ouganda", code: "UG", dial: "+256", flag: "🇺🇬" },
+  { name: "Rwanda", code: "RW", dial: "+250", flag: "🇷🇼" },
+  { name: "Burundi", code: "BI", dial: "+257", flag: "🇧🇮" },
+  { name: "Éthiopie", code: "ET", dial: "+251", flag: "🇪🇹" },
+  { name: "Somalie", code: "SO", dial: "+252", flag: "🇸🇴" },
+  { name: "Afrique du Sud", code: "ZA", dial: "+27", flag: "🇿🇦" },
+  { name: "Zambie", code: "ZM", dial: "+260", flag: "🇿🇲" },
+  { name: "Zimbabwe", code: "ZW", dial: "+263", flag: "🇿🇼" },
+  { name: "Mozambique", code: "MZ", dial: "+258", flag: "🇲🇿" },
+  { name: "Namibie", code: "NA", dial: "+264", flag: "🇳🇦" },
+  { name: "Botswana", code: "BW", dial: "+267", flag: "🇧🇼" },
+  { name: "Madagascar", code: "MG", dial: "+261", flag: "🇲🇬" },
+  { name: "Maurice", code: "MU", dial: "+230", flag: "🇲🇺" },
+  { name: "France", code: "FR", dial: "+33", flag: "🇫🇷" },
+  { name: "Belgique", code: "BE", dial: "+32", flag: "🇧🇪" },
+  { name: "Canada", code: "CA", dial: "+1", flag: "🇨🇦" },
+  { name: "États-Unis", code: "US", dial: "+1", flag: "🇺🇸" },
+];
